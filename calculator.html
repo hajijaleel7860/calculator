@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #3c3c3c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            background-color: #bfbfbf;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+        .calculator .display {
+            height: 60px;
+            border-radius: 10px;
+            text-align: right;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-right: 10px;
+            background-color: white;
+        }
+        .calculator .btn {
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            margin: 5px;
+            border-radius: 10px;
+        }
+        .btn-number {
+            background-color: #4d5c6b;
+            color: white;
+        }
+        .btn-operation {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-equal {
+            background-color: #f39c12;
+            color: white;
+            width: calc(100% - 10px);
+        }
+        .btn-clear {
+            background-color: #7f8c8d;
+            color: white;
+            width: calc(100% - 10px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <input type="text" class="form-control display" id="display" disabled value="0">
+    <div class="row">
+        <button class="btn btn-clear col" id="clear">C</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-number col" data-value="7">7</button>
+        <button class="btn btn-number col" data-value="8">8</button>
+        <button class="btn btn-number col" data-value="9">9</button>
+        <button class="btn btn-operation col" data-operation="/">÷</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-number col" data-value="4">4</button>
+        <button class="btn btn-number col" data-value="5">5</button>
+        <button class="btn btn-number col" data-value="6">6</button>
+        <button class="btn btn-operation col" data-operation="*">×</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-number col" data-value="1">1</button>
+        <button class="btn btn-number col" data-value="2">2</button>
+        <button class="btn btn-number col" data-value="3">3</button>
+        <button class="btn btn-operation col" data-operation="-">-</button>
+    </div>
+    <div class="row">
+        <button class="btn btn-number col" data-value="0">0</button>
+        <button class="btn btn-operation col" data-operation="+">+</button>
+        <button class="btn btn-equal col" id="equal">=</button>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    let display = document.getElementById('display');
+    let buttons = document.querySelectorAll('.btn-number');
+    let operators = document.querySelectorAll('.btn-operation');
+    let clear = document.getElementById('clear');
+    let equal = document.getElementById('equal');
+
+    let currentInput = '';
+    let previousInput = '';
+    let operation = null;
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentInput.length >= 10) return;  // Limit input length
+            if (display.value === '0') {
+                display.value = button.dataset.value;
+                currentInput = button.dataset.value;
+            } else {
+                display.value += button.dataset.value;
+                currentInput += button.dataset.value;
+            }
+        });
+    });
+
+    operators.forEach(op => {
+        op.addEventListener('click', () => {
+            if (operation) {
+                calculate();
+            }
+            operation = op.dataset.operation;
+            previousInput = currentInput;
+            currentInput = '';
+            display.value += ` ${op.textContent} `;
+        });
+    });
+
+    equal.addEventListener('click', calculate);
+
+    clear.addEventListener('click', () => {
+        currentInput = '';
+        previousInput = '';
+        operation = null;
+        display.value = '0';
+    });
+
+    function calculate() {
+        if (!operation || !previousInput || !currentInput) return;
+        let result;
+        const prev = parseFloat(previousInput);
+        const curr = parseFloat(currentInput);
+
+        switch (operation) {
+            case '+':
+                result = prev + curr;
+                break;
+            case '-':
+                result = prev - curr;
+                break;
+            case '*':
+                result = prev * curr;
+                break;
+            case '/':
+                result = prev / curr;
+                break;
+        }
+
+        display.value = result;
+        currentInput = result;
+        previousInput = '';
+        operation = null;
+    }
+</script>
+
+</body>
+</html>
